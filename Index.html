@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسبحة إلكترونية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Amiri', serif;
+            background-color: #f4f1e8;
+            color: #5a3a22;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border: 2px solid #5a3a22;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #5a3a22;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .counter {
+            font-size: 2.5rem;
+            color: #fff;
+            background-color: #8b5e3c;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #5a3a22;
+            width: 100%;
+            max-width: 250px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .tasbeeh-display {
+            font-size: 1.2rem;
+            color: #5a3a22;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #5a3a22;
+            width: 100%;
+            max-width: 300px;
+            margin: 15px auto;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .button {
+            background-color: #d4a373;
+            color: #5a3a22;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            border: 2px solid #5a3a22;
+            width: 100%;
+            max-width: 250px;
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: #b5834f;
+            transform: scale(1.05);
+        }
+
+        .reset-button {
+            background-color: #a0522d;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            border: 2px solid #5a3a22;
+            width: 100%;
+            max-width: 200px;
+            cursor: pointer;
+        }
+
+        .reset-button:hover {
+            background-color: #8b4513;
+        }
+
+        footer {
+            margin-top: 20px;
+            background-color: #8b5e3c;
+            color: white;
+            padding: 10px;
+            font-size: 0.8rem;
+            border-top: 2px solid #5a3a22;
+        }
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #5a3a22; /* لون أغمق لتباين أفضل */
+    color: white;
+    padding: 15px 10px;
+    font-size: 0.9rem;
+    text-align: center;
+    border-top: 3px solid #d4a373;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-text {
+    flex: 1;
+    text-align: center;
+}
+
+.footer-links {
+    display: flex;
+    gap: 10px;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: #d4a373;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>مسبحة إلكترونية</h1>
+        <div class="counter" id="counter">0</div>
+        <div class="tasbeeh-display" id="tasbeehDisplay">اضغط على "ابدأ التسبيح"</div>
+
+        <div class="buttons-container">
+            <button class="button" id="countButton">اضغط للتسبيح</button>
+            <button class="button" id="autoTasbeehButton">ابدأ التسبيح</button>
+            <button class="reset-button" id="resetButton">إعادة العداد</button>
+        </div>
+    </div>
+
+    <footer>
+        تم التطوير بواسطة لؤي مفضل | 2025
+    </footer>
+
+    <script>
+        let count = 0;
+        let autoTasbeehInterval;
+        const counterElement = document.getElementById('counter');
+        const tasbeehDisplay = document.getElementById('tasbeehDisplay');
+        const countButton = document.getElementById('countButton');
+        const autoTasbeehButton = document.getElementById('autoTasbeehButton');
+        const resetButton = document.getElementById('resetButton');
+
+        const tasbeehList = ["سبحان الله", "الحمد لله", "لا إله إلا الله", "الله أكبر"];
+        let currentTasbeehIndex = 0;
+
+        countButton.addEventListener('click', () => {
+            count++;
+            counterElement.textContent = count;
+            updateTasbeehDisplay();
+        });
+
+        autoTasbeehButton.addEventListener('click', () => {
+            if (autoTasbeehInterval) {
+                clearInterval(autoTasbeehInterval);
+                autoTasbeehInterval = null;
+                autoTasbeehButton.textContent = "ابدأ التسبيح";
+                tasbeehDisplay.textContent = "تم إيقاف التسبيح التلقائي";
+            } else {
+                autoTasbeehInterval = setInterval(() => {
+                    count++;
+                    counterElement.textContent = count;
+                    updateTasbeehDisplay();
+                }, 2000);
+                autoTasbeehButton.textContent = "إيقاف التسبيح";
+            }
+        });
+
+        resetButton.addEventListener('click', () => {
+            count = 0;
+            counterElement.textContent = count;
+            tasbeehDisplay.textContent = "اضغط على 'ابدأ التسبيح'";
+            if (autoTasbeehInterval) {
+                clearInterval(autoTasbeehInterval);
+                autoTasbeehInterval = null;
+                autoTasbeehButton.textContent = "ابدأ التسبيح";
+            }
+        });
+
+        function updateTasbeehDisplay() {
+            tasbeehDisplay.textContent = tasbeehList[currentTasbeehIndex];
+            currentTasbeehIndex = (currentTasbeehIndex + 1) % tasbeehList.length;
+        }
+    </script>
+<footer>
+    <div class="footer-content">
+        <div class="footer-text">
+            تم التطوير بواسطة <strong>لؤي مفضل</strong> 
+        </div>
+        
+    </div>
+</footer>
+
+</body>
+</html>
